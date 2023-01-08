@@ -10,28 +10,27 @@ var h_url = `https://gateway.marvel.com:443/v1/public/characters?ts=${ts}&apikey
 // ...............................................................................................................................................................
 
 let arr = [];
-let fav_arr = [];
 
 
 function homepage() {
-    fetch(h_url)
-        .then(response => response.json())
+    fetch(h_url) // fetching url
+        .then(response => response.json()) // resolving promise
         .then(infos => {
             // console.log(data.data.results)
-            homepage_hero(infos.data.results)
+            homepage_hero(infos.data.results) // again resolving and getting data and calling homepagehero  fucntion
         });
-} homepage();
+} homepage();// calling itself
 
 
 function homepage_hero(data) {
-    let card_bucket = document.querySelector(".container");
+    let card_bucket = document.querySelector(".container"); // getting element
 
-    for (let dat of data) {
+    for (let dat of data) { // loop for dispalying 20 elements at homepage
         let cardbox = document.createElement('div');
         cardbox.classList.add('card');
-        arr.push(dat.id);
+        arr.push(dat.id); // getting ids of character in array
         // console.log(dat);
-        cardbox.innerHTML =
+        cardbox.innerHTML = // displaying content through java script
             `<img src="${dat.thumbnail.path + '.' + dat.thumbnail.extension}" alt="" class="card-img">
             <h3 class="card-heading">${dat.name}</h3>
             <div class="btns">
@@ -39,15 +38,15 @@ function homepage_hero(data) {
             <i class="fa-solid un-fav  fa-heart"></i>
             </div>
             <p class="char-id">ID:${dat.id}</p>`
-        card_bucket.appendChild(cardbox);
+        card_bucket.appendChild(cardbox);// appending to dispkay html through java script
     }
 }
 // '''''''''''''''''''''''''''
 
-function removeall() {
+function removeall() { // fucntion to rempve all content on page
     let c = document.querySelectorAll(".card");
     // console.log(c);
-    for (let i = 0; i < c.length; i++) {
+    for (let i = 0; i < c.length; i++) { // loop to travel to all the cards to delete them all
         // console.log(c[i]);
         c[i].remove();
         arr = [];
@@ -60,33 +59,33 @@ function removeall() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-let card_bcket = document.querySelector(".container");
+let card_bcket = document.querySelector(".container"); // this function is also to delete all the contents on the page and then to display the more dtails of the superhero 
 card_bcket.addEventListener('click', (e) => {
     if (e.target.classList.contains("links")) {
-        removeall();
+        removeall(); // this will remove all the contents from the page
         let c = e.target.getAttribute('id');
-        superhero(c);
+        superhero(c); // thiss will call the  fucntion of superheroe to display all the informatiuon of the current superhero
 
 
     }
 })
 
 
-function superhero(id) {
+function superhero(id) { // dfunction to display all the details of superhero
     // console.log(id);
     var s_url = `https://gateway.marvel.com:443/v1/public/characters/${id}?ts=${ts}&apikey=${public_key}&hash=${hash}`;
     fetch(s_url)
-        .then(response => response.json())
+        .then(response => response.json())// promise resolving using then
         .then(infos => {
             // console.log(infos.data.results)
-            superhero_details(infos.data.results);
+            superhero_details(infos.data.results);  // callling fucntion and paassing details
         });
 }
 
 let card_bucket = document.querySelector(".container")
 function superhero_details(details) {
     // console.log(details[0].name);
-    card_bucket.innerHTML =
+    card_bucket.innerHTML = // container for display more details of the superhero
         `<div class="detail-card">
                 <div class="uppernav">
                    <p>${details[0].name}</p>
@@ -114,10 +113,10 @@ function superhero_details(details) {
                 </div>
             </div>`
 
-    let back = document.querySelector(".back");
+    let back = document.querySelector(".back"); // fucntion to go back from that page
     back.addEventListener('click', function () {
-        card_bucket.innerHTML = "";
-        homepage();
+        card_bucket.innerHTML = ""; // this will delete all the more detials of the superhero
+        homepage(); // this will return to homepage so that when we click on back button it will show the homepage
     })
 }
 
@@ -127,15 +126,15 @@ function superhero_details(details) {
 // .........................................................................................................................................................
 
 
-
+// search function to control the search and display result when there are 3 charcters
 let input = document.querySelector("#search");
 let count = 0;
 let text = 0;
 input.addEventListener('keyup', function (e) {
-    if (input.value.length >= 3) {
-        search(input.value);
+    if (input.value.length >= 3) { // this will show the result after 3 charcter key are pressed
+        search(input.value); // calling search function 
     }
-    if (e.keyCode == 13) {
+    if (e.keyCode == 13) { // this will prevent default
         e.preventDefault();
     }
 
@@ -145,14 +144,13 @@ input.addEventListener('keyup', function (e) {
 function search(search) {
     var s_url = `https://gateway.marvel.com:443/v1/public/characters?ts=${ts}&nameStartsWith=${search}&apikey=${public_key}&hash=${hash}`;
     fetch(s_url)
-    fetch(s_url)
         .then(response => response.json())
         .then(search_data => {
             // console.log(search_data.data.results)
             //    console.log(search.length);
-            removeall();
+            removeall(); // when search start it will remove all homepage content and then it will only show the serach result
             homepage_hero(search_data.data.results);
-            if (input.value == "") {
+            if (input.value == "") { // if input value is empty again then it will remove all the search result and show the homepage again
                 removeall();
                 homepage();
             }
@@ -160,7 +158,7 @@ function search(search) {
 }
 
 // MENU
-let home = document.getElementById("homepage");
+let home = document.getElementById("homepage"); // adding functionality to p tags so that on clicking on that it will shwo hoempage
 home.addEventListener("click", function () {
     // console.log("hi")
     removeall();
@@ -178,7 +176,7 @@ function store() {
             var cur = e.target;
             var prev = e.target.previousElementSibling;
             var key = prev.getAttribute('id');
-            localStorage.setItem(key, key)
+            localStorage.setItem(key, key) // getting id as a key in local storage
             cur.classList.add("fav");
             cur.classList.remove("un-fav");
             // console.log(c, key);
@@ -187,7 +185,7 @@ function store() {
             var cur = e.target;
             var prev = e.target.previousElementSibling;
             var key = prev.getAttribute('id');
-            localStorage.removeItem(key);
+            localStorage.removeItem(key); // removing particular id form key from loal storage
             cur.classList.add("un-fav");
             cur.classList.remove("fav");
             // console.log(c, key);
@@ -204,7 +202,7 @@ favourite.addEventListener("click", function () {
     if (localStorage.length == 0) {
         let card_bucket = document.querySelector(".container");
         let ele = document.createElement("div");
-        ele.innerHTML =
+        ele.innerHTML = //  if nothing is present in local storage then it will show no data found dailog box
             `<div class="message-box">
             <h1> No Data Found !!! </h1>
                 <div class="message">
@@ -215,7 +213,7 @@ favourite.addEventListener("click", function () {
     }
     // console.log(localStorage)
     else {
-        favourite_page(localStorage);
+        favourite_page(localStorage); // if it is not empty then it wil pass the local storage to the favourite page function
     }
 })
 
@@ -237,7 +235,7 @@ function fav_hero(data) {
         let cardbox = document.createElement('div');
         cardbox.classList.add('card');
         // console.log(dat);
-        cardbox.innerHTML =
+        cardbox.innerHTML = // it will show the cards at favoruite page with all red heart
             ` 
             <img src="${dat.thumbnail.path + '.' + dat.thumbnail.extension}" alt="" class="card-img">
                 <h3 class="card-heading">${dat.name}</h3>
